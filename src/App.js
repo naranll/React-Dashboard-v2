@@ -1,10 +1,11 @@
 import './App.css';
+import axios from 'axios';
+import { useState } from 'react';
 
 function App() {
-  const { data: product, setShowModal, setShowAddSpec } = prop;
-  const [showNewSpec, setShowNewSpec] = useState(false);
-  const [specNumber, setSpecNumber] = useState([]);
-  
+  const [image, setImage] = useState();
+
+
   const submitHandler = (e) => {
     e.preventDefault();
 
@@ -14,131 +15,97 @@ function App() {
       stock: e.target.productStock.value,
       sale: e.target.productSale.value,
       category: e.target.category.value,
-      spec: product.spec,
     };
-    console.log("input newProduct:", newObj);
+    // console.log("input newObj:", newObj);
 
-    if (product) {
-      const editedObj = {
-        id: product.id,
-        ...newObj,
-      };
-      editProduct(editedObj);
-    } else {
-      addNew(newObj);
-    }
-  };
+    const productForm = new FormData();
+    productForm.append("progImage", image);
+    productForm.append("prodInfo", JSON.stringify(newObj));
 
-  function editProduct(product) {
-    axios
-      .patch(`http://localhost:2020/products/${product.id}`, product)
-      .then((response) => {
-        response && setShowModal(false);
-      })
-      .catch(() => console.log("error editing product"));
+    console.log("productForm", productForm)
+    addNew(productForm);
+  }
+
+  function changeHandler(e) {
+    console.log("onChange event", e.target.files[0]);
+    setImage(e.target.files[0]);
   }
 
   function addNew(newProduct) {
     axios
-      .post("http://localhost:2020/products", newProduct)
+      .post("http://localhost:5500/products", newProduct)
+      // fetch("http://localhost:6060/products", {
+      //   method: "POST",
+      //   mode: "cors",
+      //   body: newProduct,
+      // })
       .then((response) => {
         console.log(response);
-        response && setShowModal(false);
       })
       .catch(() => console.log("error posting axios"));
   }
-  return (
-    <form onSubmit={submitHandler}>
-            <div className="modal-img-container">
-              <img
-                src={product && product.image}
-                className="modal-image-view"
-              />
-              <input
-                type="text"
-                name="productImage"
-                defaultValue={product && product.image}
-              />
-            </div>
-            <div className="modal-rows">
-              <label>
-                <b>Name</b>
-                <input
-                  type="text"
-                  name="productName"
-                  defaultValue={product && product.name}
-                />
-              </label>
-              <label>
-                <b>Price</b>
-                <input
-                  type="text"
-                  name="productPrice"
-                  defaultValue={product && product.price}
-                />
-              </label>
-            </div>
-            <div className="modal-rows">
-              <label>
-                <b>Stock</b>
-                <input
-                  type="text"
-                  name="productStock"
-                  defaultValue={product && product.stock}
-                />
-              </label>
-              <label>
-                <b>Sale</b>
-                <input
-                  type="text"
-                  name="productSale"
-                  defaultValue={product && product.sale}
-                />
-              </label>
-            </div>
 
-            <h4>Specs</h4>
-            {product && product.spec && (
-              <div className="modal-rows">
-                {product.spec.map((specObject, i) => {
-                  for (let prop in specObject) {
-                    return (
-                      <label key={i}>
-                        <b>{prop}</b>
-                        <input type="text" defaultValue={specObject[prop]} />
-                      </label>
-                    );
-                  }
-                })}
-              </div>
-            )}
-            {/* <div
-              className="spec-add-btn"
-              onClick={() => {
-                // setShowNewSpec(true);
-                setSpecNumber([...specNumber, ""]);
-                // getSpecInput();
-                setShowAddSpec(true);
-              }}
-            >
-              <span>
-                <AddIcon color={"black"} />
-              </span>
-              <input type="button" value="Add spec" className="spec-btn" />
-            </div> */}
-            <div>
-              <h3>Choose category</h3>
-              <select name="category" className="modal-category">
-                <option value="Applainces">Appliances</option>
-                <option value="Computers & Tablets">Computers & Tablets</option>
-                <option value="Gaming console">Gaming console</option>
-                <option value="Telescope">Telescope</option>
-              </select>
-            </div>
-            <button type="submit" className="submit">
-              Save changes
-            </button>
-          </form>
+  return (
+    <div className='App'>
+      <form onSubmit={submitHandler} encType="multipart/form-data">
+        <div className="modal-img-container">
+          <input
+            type="file"
+            name="productImage"
+            onChange={changeHandler}
+          />
+        </div>
+
+        <div className="modal-rows">
+          <label>
+            <b>Name</b>
+            <input
+              type="text"
+              name="productName"
+            />
+          </label>
+          <label>
+            <b>Price</b>
+            <input
+              type="text"
+              name="productPrice"
+
+            />
+          </label>
+        </div>
+        <div className="modal-rows">
+          <label>
+            <b>Stock</b>
+            <input
+              type="text"
+              name="productStock"
+
+            />
+          </label>
+          <label>
+            <b>Sale</b>
+            <input
+              type="text"
+              name="productSale"
+            />
+          </label>
+        </div>
+
+        <div>
+          <h3>Choose category</h3>
+          <select name="category" className="modal-category">
+            <option value="Applainces">Appliances</option>
+            <option value="Computers & Tablets">Computers & Tablets</option>
+            <option value="Gaming console">Gaming console</option>
+            <option value="Telescope">Telescope</option>
+          </select>
+        </div>
+
+        <button type="submit" className="submit">
+          Save changes
+        </button>
+      </form>
+    </div>
   );
 }
 
