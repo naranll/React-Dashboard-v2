@@ -3,8 +3,6 @@ import axios from 'axios';
 import { useState } from 'react';
 
 function App() {
-  const [image, setImage] = useState();
-
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -16,29 +14,20 @@ function App() {
       sale: e.target.productSale.value,
       category: e.target.category.value,
     };
-    // console.log("input newObj:", newObj);
+    // console.log("input newObj:", e.target.productImage.files[0]);
 
     const productForm = new FormData();
-    productForm.append("progImage", image);
+    productForm.append("prodImage", e.target.productImage.files[0]);
     productForm.append("prodInfo", JSON.stringify(newObj));
 
     console.log("productForm", productForm)
     addNew(productForm);
   }
 
-  function changeHandler(e) {
-    console.log("onChange event", e.target.files[0]);
-    setImage(e.target.files[0]);
-  }
-
   function addNew(newProduct) {
+    console.log("addNew:", newProduct);
     axios
       .post("http://localhost:5500/products", newProduct)
-      // fetch("http://localhost:6060/products", {
-      //   method: "POST",
-      //   mode: "cors",
-      //   body: newProduct,
-      // })
       .then((response) => {
         console.log(response);
       })
@@ -52,7 +41,6 @@ function App() {
           <input
             type="file"
             name="productImage"
-            onChange={changeHandler}
           />
         </div>
 
