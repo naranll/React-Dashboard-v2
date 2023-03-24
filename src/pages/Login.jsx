@@ -3,7 +3,7 @@ import { UserContext } from "../App";
 export default function Login(prop) {
     const { loginChecker } = prop;
 
-    function getInput(input) {
+    function loginHandler(input) {
         input.preventDefault();
         loginChecker(input.target.inName.value, input.target.inPass.value);
     }
@@ -14,7 +14,7 @@ export default function Login(prop) {
 
     return <div className="loginPage">
         <div className="loginForm">
-            <form onSubmit={getInput}>
+            <form onSubmit={loginHandler}>
                 <input type="text" placeholder="Email or phone number" name="inName" />
                 <input type="text" placeholder="Password" name="inPass" />
                 <button type="submit">Log In</button>
