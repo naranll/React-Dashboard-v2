@@ -7,10 +7,7 @@ export default function Login() {
     function loginHandler(input) {
         input.preventDefault();
         // setUser([input.target.inName.value, input.target.inPass.value]);
-        const userLogin = {
-            name: input.target.inName.value,
-            pass: input.target.inPass.value,
-        }
+
         setUser(userLogin);
     }
 
