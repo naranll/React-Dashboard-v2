@@ -1,8 +1,10 @@
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 
 export default function Login() {
     const { effectFunc } = useContext(UserContext);
+    const navigate = useNavigate();
 
     function loginHandler(input) {
         input.preventDefault();
@@ -13,9 +15,11 @@ export default function Login() {
 
     function register() {
         console.log("register button");
+        navigate('/register')
     }
 
     return <div className="loginPage">
+        <h2>Login Form</h2>
         <div className="loginForm">
             <form onSubmit={effectFunc}>
                 <input type="text" placeholder="Email or phone number" name="inName" />
