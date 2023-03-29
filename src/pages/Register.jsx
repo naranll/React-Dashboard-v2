@@ -11,7 +11,7 @@ export default function Register() {
         console.log("newUser", newUser);
 
         axios.post("http://localhost:5500/register", newUser)
-            .then((res) => console.log(res))
+            .then((res) => console.log(res.data))
             .catch((err) => console.log(err));
     }
 
